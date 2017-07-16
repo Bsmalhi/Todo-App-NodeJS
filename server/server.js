@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const {ObjectID} = require('mongodb');
 const _ = require('lodash');
+var {authenticate} = require('./middleware/authenticate')
 
 var {mongoose} = require('./db/mongoose');
 var {Todo} = require('./models/todo');
@@ -100,6 +101,12 @@ app.post('/users', (req, res)=>{
         res.header('x-auth', token).send(user);
     }).catch((e) => res.status(400).send(e));
 
+});
+
+
+//uses Middleware file authenticate
+app.get('/users/me', authenticate, (req, res)=>{
+    res.send(req.user);
 });
 
 app.listen(port, ()=>{
